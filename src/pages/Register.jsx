@@ -1,31 +1,110 @@
+/* eslint-disable no-unused-vars */
 import { Button, Card, Form, Input } from "@heroui/react";
-import React from "react";
+import React, { useState } from "react";
 
 export default function Register() {
-
-  const validate =(formdata)=>{
-    let errorData = {}
-    if(formdata.password !== formdata.confirmPassword){
-      errorData['confirmPassword'] = 'Password is not matching'
-    }
-  }
-
-  const handleSubmit=(e)=>{
-    e.preventDefault()
-    const newData = Object.fromEntries(new  FormData(e.currentTarget))
-    const errorData = validate(newData)
-    console.log(newData)
-  }
+  const [errors, setErrors] = useState({});
+  const [credntialList, setCredntialList] = useState([
+    {
+      username: "xyzdd",
+      password: "xyz",
+    },
+    {
+      username: "xyzddd",
+      password: "xyz",
+    },
+  ]);
+  console.log(credntialList);
+  const validationConfig = {
+    fullName: [
+      { required: "true", message: "Name cannot be empty" },
+      { minLength: 5, message: "Length Should be Greater than 5" },
+    ],
+    username: [
+      { required: "true", message: "Username cannot be empty" },
+      { minLength: 5, message: "Length Should be Greater than 5" },
+      { unique: true, message: "Username Already Exists" },
+    ],
+    password: [
+      {
+        pattern:
+          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        message:
+          "Password must contains Minimum eight characters, at least one letter, one number and one special character:",
+      },
+    ],
+  };
+  const handleValidate = (key, value) => {
+    let errorData = {};
+    validationConfig[key].some((rule) => {
+      if (rule.required && !value) {
+        errorData[key] = rule.message;
+        return true;
+      }
+      if (rule.minLength && value.length < rule.minLength) {
+        errorData[key] = rule.message;
+        return true;
+      }
+      if (rule.unique) {
+        const exisistingUser = credntialList.find(
+          (user) => user.username == value
+        );
+        if (exisistingUser) {
+          errorData[key] = rule.message;
+        }
+        return true;
+      }
+      if (rule.pattern) {
+        if (!rule.pattern.test(value)) {
+          errorData[key] = rule.message;
+        }
+      }
+    });
+    return errorData[key];
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newData = Object.fromEntries(new FormData(e.currentTarget));
+    setCredntialList((prevState) => ([ ...prevState, newData ]));
+  };
   return (
     <div className="min-h-[80vh] flex items-center">
       <Card className="w-[500px] mx-auto">
-        <Form action="#" className="flex flex-col gap-4 shadow-md rad px-4 py-8" onSubmit={(e)=>handleSubmit(e)}>
-          <p className="text-xl font-bold mb-4 self-center">User Registration</p>
-          <Input name="fullName" label="Full Name" placeholder="Enter your Name" type="text" />
-          <Input name="username" label="username" placeholder="Enter your username" type="text" />
-          <Input name="password" label="password" placeholder="Enter your Password" type="password" />
-          <Input name="confirmPassword" label="password" placeholder="Confirm Password" type="password" />
-          <Button variant="bordered" color="success" className="mt-6 self-center" type="submit">
+        <Form
+          action="#"
+          className="flex flex-col gap-4 shadow-md rad px-4 py-8"
+          onSubmit={(e) => handleSubmit(e)}
+        >
+          <p className="text-xl font-bold mb-4 self-center">
+            User Registration
+          </p>
+          <Input
+            name="fullName"
+            label="Full Name"
+            placeholder="Enter your Name"
+            type="text"
+            validate={(value) => handleValidate("fullName", value)}
+          />
+          <Input
+            name="username"
+            label="username"
+            placeholder="Enter your username"
+            type="text"
+            validate={(value) => handleValidate("username", value)}
+          />
+          <Input
+            name="password"
+            label="password"
+            placeholder="Enter your Password"
+            type="password"
+            validate={(value) => handleValidate("password", value)}
+          />
+          <Button
+            variant="bordered"
+            color="success"
+            className="mt-6 self-center"
+            type="submit"
+          >
             Register
           </Button>
         </Form>
