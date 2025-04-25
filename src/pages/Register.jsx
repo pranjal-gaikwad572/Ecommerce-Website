@@ -1,9 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { addToast, Button, Card, Form, Input } from "@heroui/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router";
+import { UsersListContext } from "../contexts/UsersListContext";
 
 export default function Register() {
+  const [usersList,setUsersList] = useContext(UsersListContext)
+  console.log(usersList)
   const navigate = useNavigate()
   const [errors, setErrors] = useState({});
   const validationConfig = {
@@ -37,7 +40,7 @@ export default function Register() {
         return true;
       }
       if (rule.unique) {
-        const exisistingUser = credntialList.find(
+        const exisistingUser = usersList.find(
           (user) => user.username == value
         );
         if (exisistingUser) {
@@ -56,7 +59,7 @@ export default function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newData = Object.fromEntries(new FormData(e.currentTarget));
-    setCredntialList((prevState) => [...prevState, newData]);
+    setUsersList((prevState) => [...prevState, newData]);
     addToast({
       title: "Registration Successful!!",
       color: "success",
