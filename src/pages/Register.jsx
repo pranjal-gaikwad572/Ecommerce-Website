@@ -6,17 +6,6 @@ import { useNavigate } from "react-router";
 export default function Register() {
   const navigate = useNavigate()
   const [errors, setErrors] = useState({});
-  const [credntialList, setCredntialList] = useState([
-    {
-      username: "xyzdd",
-      password: "xyz",
-    },
-    {
-      username: "xyzddd",
-      password: "xyz",
-    },
-  ]);
-  console.log(credntialList);
   const validationConfig = {
     fullName: [
       { required: "true", message: "Name cannot be empty" },
