@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { Button, Card, Form, Input } from "@heroui/react";
+import { addToast, Button, Card, Form, Input } from "@heroui/react";
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 export default function Register() {
+  const navigate = useNavigate()
   const [errors, setErrors] = useState({});
   const [credntialList, setCredntialList] = useState([
     {
@@ -65,7 +67,12 @@ export default function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newData = Object.fromEntries(new FormData(e.currentTarget));
-    setCredntialList((prevState) => ([ ...prevState, newData ]));
+    setCredntialList((prevState) => [...prevState, newData]);
+    addToast({
+      title: "Registration Successful!!",
+      color: "success",
+    });
+    navigate('/login')
   };
   return (
     <div className="min-h-[80vh] flex items-center">

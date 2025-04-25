@@ -5,7 +5,6 @@ export default function useLocalStroage(key, initialData) {
 
   useEffect(() => {
     const existingData = JSON.parse(localStorage.getItem(key));
-    console.log(existingData);
     if (existingData) {
       setData(existingData);
     } else {
